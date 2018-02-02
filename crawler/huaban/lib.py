@@ -13,6 +13,7 @@ from utils import DATE_FORMATE, LOG_IMG, LOG_UPLOAD, LOG_URL
 
 lock = threading.Lock()
 
+
 def search(pattern, text):
     # a better regex searcher
     results = re.search(pattern, text)
@@ -106,7 +107,7 @@ def write_log(str, filename=None):
         log = filename
     with open(log, 'a+') as f:
         cur_time = datetime.datetime.now().strftime(DATE_FORMATE)
-        f.write(str+' \'%s\'\n' % cur_time)
+        f.write(str + ' \'%s\'\n' % cur_time)
 
 
 def write_url_log(str):
@@ -134,4 +135,3 @@ def write_data(filename, title=None, values=None):
         lines = f.readlines()  # 读取所有行
         if len(lines) == 0:
             f.write(txt)
-

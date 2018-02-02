@@ -8,8 +8,7 @@ from crawler.huaban.lib import get, search, json_parse, write_log
 from emails.email_send import notice_admin
 from utils import ACCOUNT, PASSWORD, COOKIES_FILENAME
 
-headers = {
-    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36'}
+headers = { 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36'}
 
 
 def get_cookie(account, password):

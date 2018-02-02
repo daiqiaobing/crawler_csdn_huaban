@@ -20,6 +20,7 @@ LOG_UPLOAD = BASE_LOG_PATH + 'upload.log'
 # 日志输出目录   实际目录需要替换log.conf中的
 LOG_OUTPUT = '/home/dlm/workspace/source/crawler_csdn_huaban/log/'
 
+
 def get_now_file():
     return BASE_LOG_PATH + datetime.datetime.now().strftime("%Y%m%d")
 
@@ -79,7 +80,7 @@ MAX_SIZE = 20
 huaban
 """
 ACCOUNT = "1192297699@qq.com"
-PASSWORD = "**********"
+PASSWORD = "13628368128.q"
 COOKIES_FILENAME = BASE_LOG_PATH + 'cookies'  # 用户登陆的cookie
 BOARD = 'statistic'
 MONTH_BORD = 'statistic_month'
@@ -95,6 +96,13 @@ ADMIN_RECEIVERS = ['1903795237@qq.com']
 SUBJECT = 'CSDN邮件通知统计发送'
 SMT_SERVER = 'smtp.qq.com'
 USERNAME = '1192297699@qq.com'
-PASSWORD='**********'
-#PASSWORD = '**********'
+PASSWORD = 'wdhwgvgkubbuhhjj'
+# PASSWORD = 'zobdeybcmgtxjegb'
 TEST_URL = 'http://huaban.com/pins/1485863182/'
+
+"""
+title
+"""
+CSDN_TITLE = "title number url date"
+COUNT_TITLE = ""
+# write_data(COUNT_FILENAME, title='id num rank points date\n')

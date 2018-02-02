@@ -1,20 +1,15 @@
 # -*- coding: utf-8 -*-
-import datetime
-import logging
 import random
 import threading
 import urllib
+import urllib.request
+
 from queue import Queue
 import time
 from bs4 import BeautifulSoup
 
-from blog_log import TimeLog, get_logger
-from crawler.huaban.lib import write_data
-from utils import CSDN_BASE, CSDN_URL, COUNT_FILENAME, DATE_FORMATE, CSDN_FILENAME, WRITE_CSDN_LOG
-
-log = TimeLog().get_logger()
-log_error = get_logger('crawlerError')
-log_count = get_logger('countInfo')
+from blog_log import TimeLog
+from utils import CSDN_BASE, CSDN_URL, COUNT_FILENAME, WRITE_CSDN_LOG
 
 
 class BlogQueue:
@@ -33,13 +28,13 @@ class BlogQueue:
         return self.__url_queue.empty()
 
 
-class BlogBase(object):
+class BlogBase(TimeLog):
     """
 
     """
 
     def __init__(self):
-        super.__init__()
+        super(BlogBase, self).__init__()
 
     def get_header(self):
         return {'User-Agent': r'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) '
@@ -73,7 +68,7 @@ class BlogBase(object):
                 else:
                     blog_urls.append(blog_base + a)
         except Exception as e:
-            log_error.error(e)
+            self.error_msg(e)
         return blog_urls
 
     def get_pages_urls(self, blog_base, page_url):
@@ -93,7 +88,7 @@ class BlogBase(object):
             for i in range(1, int(num) + 1):
                 blog_uls.extend(self.get_page_urls(page_url + str(i), blog_base))
         except Exception as e:
-            log_error.error(e)
+            self.error_msg(e)
         return blog_uls
 
     def last_blog_info(self):
@@ -103,7 +98,6 @@ class BlogBase(object):
         """
         blog_id = 1
         total = 0
-        write_data(COUNT_FILENAME, title='id num rank points date\n')
         with open(COUNT_FILENAME)as f:
             try:
                 lines = f.readlines()  # 读取所有行
@@ -111,7 +105,7 @@ class BlogBase(object):
                 total = int(last_line.split('-')[1])
                 blog_id = int(last_line.split('-')[0])
             except Exception as e:
-                log_error.error(e)
+                self.error_msg(e)
         return blog_id, total
 
     def blog_article_info(self, html):
@@ -126,7 +120,7 @@ class BlogBase(object):
             number = main.find('article').select('.article_bar')[0].select('.right_bar')[0].find('li').find(
                 'span').string
         except Exception as e:
-            log_error.error(e)
+            self.error_msg(e)
         return title, number
 
 
@@ -147,6 +141,7 @@ class Blog(BlogBase):
         self.__sleep_time = sleep_time
         self.__blog_urls = self.get_pages_urls(CSDN_BASE, CSDN_URL)
         self.__blog_num = blog_num
+        super(Blog, self).__init__()
 
     def add_url_task(self):
         """
@@ -157,7 +152,7 @@ class Blog(BlogBase):
             try:
                 self.__url_queue.add_url(self.__blog_urls[random.randint(0, num - 1)])
             except Exception as e:
-                log_error.error(e)
+                self.error_msg(e)
 
     def compare_number_task(self, page_url):
         """
@@ -172,35 +167,32 @@ class Blog(BlogBase):
                 html_bytes = self.get_html(page_url)
                 soup = BeautifulSoup(html_bytes, "html.parser")
                 grades = soup.find('aside').select('.interflow ')[0].select('.gradeAndbadge')
-                num = int(str(grades[0].select('.num')[0].string).replace(',', ''))
-                rank = int(str(grades[2].select('.num')[0].string).replace(',', ''))
-                points = int(str(grades[3].select('.num')[0].string).replace(',', ''))
+                num = int(str(grades[2].attrs.get('title', 0)).replace(',', ''))
+                rank = int(str(grades[3].attrs.get('title', 0)).replace(',', ''))
+                points = int(str(grades[4].attrs.get('title', 0)).replace(',', ''))
                 if total == 0:
                     total = num
                 if num - total > self.__blog_num:
                     values = '%s - %s - %s - %s' % (blog_id + 1, num, rank, points)
-                    log_count.info(values)
+                    self.count_msg(values)
                     self.__lock.acquire()
-                    # write_data(COUNT_FILENAME, values=values)
                     self.__is_finish = True
                     self.__lock.release()
             except Exception as e:
-                log_error.error(e)
+                self.__lock.acquire()
+                self.__is_finish = True
+                self.__lock.release()
+                self.error_msg(e)
 
     def blog_refresh_task(self):
         """获取数据"""
-        file_title = 'title number url date\n'
-        write_data(CSDN_FILENAME, title=file_title)
         while not self.__is_finish or not self.__url_queue.empty():
             url = self.__url_queue.get_url()
             html_doc = self.get_html(url)
             if WRITE_CSDN_LOG:
                 title, number = self.blog_article_info(html_doc)
                 values = '\'%s\' %s \'%s\'' % (title, number, url)
-                log.info(values)
-                # self.__lock.acquire()
-                # write_data(filename=CSDN_FILENAME, title=file_title, values=values)
-                # self.__lock.release()
+                self.csdn_msg(values)
 
     def exe_task(self, task_num):
         """"""
@@ -214,7 +206,6 @@ class Blog(BlogBase):
 
 
 if __name__ == '__main__':
-    # log_count.info('999999999999999')
     queue = BlogQueue()
     blog = Blog(queue=queue, blog_num=2, sleep_time=2, )
-    blog.exe_task(1)
+    blog.exe_task(5)
