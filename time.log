@@ -1,0 +1,37 @@
+/home/mango/workspace/python/crawler_csdn_huaban/crawler/font/JDJLS.TTF
+[[[[[56]]]]
+no display name and no $DISPLAY environment variable
+[[[[[sss]]]]/home/mango/workspace/python/crawler_csdn_huaban/crawler/img/statistic/statistic20180125233505.png
+[master de44f6b] 2018-01-25_23:35
+ 5 files changed, 45 insertions(+), 6 deletions(-)
+/home/mango/workspace/python/crawler_csdn_huaban/crawler/font/JDJLS.TTF
+[[[[[56]]]]
+no display name and no $DISPLAY environment variable
+[[[[[sss]]]]/home/mango/workspace/python/crawler_csdn_huaban/crawler/img/statistic/statistic20180125233805.png
+[master cb55182] 2018-01-25_23:38
+ 6 files changed, 43 insertions(+), 2 deletions(-)
+/home/mango/workspace/python/crawler_csdn_huaban/crawler/font/JDJLS.TTF
+[[[[[56]]]]
+[[[[[======]]]]
+[master 1eef68a] 2018-01-25_23:42
+ 10 files changed, 48 insertions(+), 4 deletions(-)
+ create mode 100644 crawler/img/statistic/statistic20180125234205.png
+/home/mango/workspace/python/crawler_csdn_huaban/crawler/font/JDJLS.TTF
+[[[[[56]]]]
+[[[[[======]]]]
+/home/mango/workspace/python/crawler_csdn_huaban/crawler/font/JDJLS.TTF
+[[[[[56]]]]
+[[[[[======]]]]
+[master f7eb74e] 2018-01-29_08:11
+ 6 files changed, 47 insertions(+)
+ create mode 100644 crawler/img/statistic/statistic20180129081022.png
+ create mode 100644 crawler/log/20180129.log
+ create mode 100644 crawler/log/csdn20180129.log
+[master c386817] 2018-01-30_08:10
+ 7 files changed, 42 insertions(+)
+ create mode 100644 crawler/img/statistic/statistic20180130081022.png
+ create mode 100644 crawler/log/csdn20180130.log
+[master 594e458] 2018-01-31_08:10
+ 7 files changed, 39 insertions(+)
+ create mode 100644 crawler/img/statistic/statistic20180131081026.png
+ create mode 100644 crawler/log/csdn20180131.log
