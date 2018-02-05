@@ -66,6 +66,8 @@ class Auth(SysLog):
 
     def login_set_cookies(self, account=ACCOUNT, password=PASSWORD):
         cur_cookies = self.get_cookie(account, password)
+        if not cur_cookies:
+            raise Exception
         with open(COOKIES_FILENAME, 'a+') as f:
             f.write(cur_cookies + '\n')
         self.cookies = {"cookies_are": cur_cookies}
@@ -93,7 +95,7 @@ class HuaBan(Auth):
         req_json = search('app\["req"\] = ({.+?});', res.text)
         return json_parse(req_json)
 
-    def upload(self, file_path, board_title, cookies, pinname=None, tname=None):
+    def upload(self, file_path, board_title, pinname=None, tname=None):
         filename = os.path.basename(file_path)
         pinname = pinname if pinname else filename
         url = "http://huaban.com/upload/"
@@ -101,14 +103,14 @@ class HuaBan(Auth):
         files = {'Content-Disposition: form-data; name="title"': '',
                  'Content-Disposition: form-data; name="upload1"; filename="' + filename + '" Content-Type: image/jpeg': image
                  }
-        res = post(url, files=files, cookies=cookies, headers=headers)  # 上传图片到花瓣服务器
+        res = post(url, files=files, cookies=self.cookies, headers=headers)  # 上传图片到花瓣服务器
         file_data = json_parse(res.text)
         if not file_data:
             msg = u' 上传失败: "{}" 上传请求未返回id, 存储的日至的文件名为：{}'.format(filename)
             self.error_msg(msg)
             return False
         file_id = file_data["id"]
-        user = self.get_user(cookies)
+        user = self.get_user(self.cookies)
         board_titles = []
         for dic in user["boards"]:
             board_titles.append(dic["title"])
@@ -120,7 +122,7 @@ class HuaBan(Auth):
             return False
         data = {"board_id": board_id, "text": pinname, "copy": "true", "file_id": file_id, "via": 1, "share_button": 0}
         url = "http://huaban.com/pins/"
-        res = post(url, data=data, cookies=cookies, headers=headers)  # 添加图片文件到画板
+        res = post(url, data=data, cookies=self.cookies, headers=headers)  # 添加图片文件到画板
 
         if '<i class="error">' in res.text:
             msg = u'[{}] 上传失败: 图片 "{}" 已经被采集超过5次，准备处理图片后重试...'.format(time.asctime()[11:19], filename)
@@ -146,4 +148,4 @@ class HuaBan(Auth):
 
 
 if __name__ == '__main__':
-    HuaBan().upload(BASE_IMG_PATH + 'statistic20180125160623.png', 'ok', MONTH_BORD)
+    HuaBan().upload(BASE_IMG_PATH + 'statistic20180125232528.png', 'ok', MONTH_BORD)
